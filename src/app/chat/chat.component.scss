@@ -1,0 +1,26 @@
+:host {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  margin: 5% auto;
+  border: solid 1px #fff;
+  border-radius: 4px;
+}
+
+//.active-dialog-wrapper {
+//  width: 77%;
+//  height: 420px;
+//  display: flex;
+//  margin: 5% auto;
+//  border: solid 1px #fff;
+//  border-radius: 4px;
+//}
+.chat-wrapper {
+  width: 77%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #d7dfe7;
+  border: solid 1px #fff;
+  border-radius: 4px;
+}

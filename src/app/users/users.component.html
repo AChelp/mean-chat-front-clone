@@ -1,0 +1,20 @@
+<div class="chatrooms">
+  <div class="chatrooms__filter">
+    <button class="chatrooms__filter-button chatrooms__filter-button--active">
+      All
+    </button>
+    <button class="chatrooms__filter-button">Online</button>
+  </div>
+  <div class="chatrooms__rooms-list">
+    <div class="room" *ngFor="let user of users" (click)="setActiveRoom(user)">
+      <div class="room__avatar"></div>
+      <div class="room__info">
+        <div class="room__name">{{user.name}}</div>
+        <div class="room__description">
+          Want to talk with {{user.name}}?
+<!--          {{user.description.length > 40 ? user.description.slice(0, 40) + '...' : user.description }}-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

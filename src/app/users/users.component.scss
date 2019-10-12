@@ -1,0 +1,64 @@
+:host {
+  width: 23%;
+  height: 100%;
+  background: #fff;
+
+}
+
+.chatrooms {
+  height: 100%;
+  position: relative;
+
+  &__filter {
+    display: flex;
+    width: 100%;
+    height: 6%;
+  }
+
+  &__filter-button {
+    color: #555555;
+    width: 50%;
+    height: 100%;
+    font-size: 1.2em;
+    background: #f8f8f8;
+    border: none;
+  }
+
+  &__filter-button--active {
+    background: #fff;
+  }
+
+  &__rooms-list {
+    padding: 10px;
+  }
+}
+
+.room {
+  display: flex;
+  margin-bottom: 5px;
+
+  &__avatar {
+    width: 75px;
+    height: 75px;
+    background: #777;
+    margin-right: 5px;
+    border-radius: 2px;
+  }
+
+  &__info {
+    //display: flex;
+    //flex-direction: column;
+    //justify-content: space-around;
+    padding: 7px;
+    width: calc(100% - 75px);
+  }
+
+  &__name {
+    font-weight: bold;
+  }
+
+  &__description {
+    font-size: 0.8em;
+    color: #adadad;
+  }
+}

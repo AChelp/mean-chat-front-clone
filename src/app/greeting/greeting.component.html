@@ -1,0 +1,78 @@
+<h1 class="greeting__header">Hello, welcome to our chat!</h1>
+<div class="greeting__text">Please, {{isLogin ? 'login' : 'enter your account data'}}.</div>
+
+<form (ngSubmit)="sendFormData()" class="greeting__form" [formGroup]="userDataForm">
+
+  <label class="greeting__form-field" for="name" *ngIf="!isLogin">
+    Enter your name <br>
+    <input
+      autocomplete="off"
+      type="text"
+      id="name"
+      formControlName="name"
+      class="greeting__input"
+      placeholder="name"
+    >
+  </label>
+  <div  ngxErrors="name" *ngIf="!isLogin">
+    <div class="greeting__error" ngxError="pattern" when="touched">
+      Name should contain only letters and be 3 to 15 characters long.
+    </div>
+    <div class="greeting__error" ngxError="required" when="touched">
+      Why are you afraid to tell us your name?
+    </div>
+  </div>
+  <br>
+
+  <label class="greeting__form-field" for="email">
+    Enter your email <br>
+    <input
+      autocomplete="off"
+      type="text"
+      id="email"
+      formControlName="email"
+      class="greeting__input"
+      placeholder="email"
+    >
+  </label>
+  <div  ngxErrors="email">
+    <div class="greeting__error" ngxError="pattern" when="touched">
+      No no no. Only valid email needed.
+    </div>
+    <div class="greeting__error" ngxError="required" when="touched">
+      Please, enter your email.
+    </div>
+  </div>
+  <br>
+
+  <label class="greeting__form-field" for="password">
+    Enter your password <br>
+  <input
+    autocomplete="off"
+    type="password"
+    id="password"
+    formControlName="password"
+    class="greeting__input greeting__input--last"
+    placeholder="password"
+  >
+  </label>
+  <div  ngxErrors="password">
+    <div class="greeting__error" ngxError="required" when="touched">
+      Please, enter the password.
+    </div>
+    <div class="greeting__error" ngxError="pattern" when="touched" *ngIf="!isLogin">
+      Really? Such a simple password? Use at least 1 number, 1 lowercase letter and 1 uppercase letter.
+      And of course at least 8 characters in length.
+    </div>
+  </div>
+  <br>
+
+  <button type="submit" class="greeting__button">{{isLogin ? 'Login' : 'Sign up'}}</button>
+</form>
+
+<div class="greeting__registration-proposition" *ngIf="isLogin">
+  Still have no account? You can <span (click)="this.toggleRegistration()" class="greeting__registration-toggle">sign up!</span>
+</div>
+<div class="greeting__registration-proposition" *ngIf="!isLogin">
+  Already have account? <span (click)="this.toggleRegistration()" class="greeting__registration-toggle">Login!</span>
+</div>

@@ -1,0 +1,11 @@
+<div class="chat-wrapper">
+  <ndc-dynamic
+    [ndcDynamicComponent]="activeDialog"
+    [ndcDynamicInputs]="inputs"
+    [ndcDynamicAttributes]="attrs"
+  >
+  </ndc-dynamic>
+  <app-new-message [username]="inputs.username" [roomName]="inputs.roomName" ></app-new-message>
+</div>
+
+<app-users [username]="inputs.username" [setActiveRoom]="setActiveRoom"></app-users>

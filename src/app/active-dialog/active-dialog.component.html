@@ -1,0 +1,41 @@
+<div class="active-room">
+  <div class="active-room__data">
+    <div class="active-room__avatar"></div>
+    <div class="active-room__info">
+      <h1 class="active-room__name">{{usernameToChat}}</h1>
+<!--      <div class="active-room__description">{{room.description}}</div>-->
+    </div>
+  </div>
+
+  <!--  //messages-->
+  <div id="chat-window" class="messages" #messagesContainer>
+    <div
+      [ngClass]="{
+      'message': true,
+      'message--my': message.user === username
+    }"
+      *ngFor="let message of messages"
+    >
+      <div
+        [ngClass]="{
+      'message__details': true,
+      'message__details--my': message.user === username
+     }"
+      >
+        <div class="message__author">{{message.user}}</div>
+        <div class="message__send-at">{{message.sendAt}}</div>
+      </div>
+      <div
+        [ngClass]="{
+      'message__body': true,
+      'message__body--my': message.user === username
+    }"
+      >
+        {{message.message}}
+      </div>
+    </div>
+  </div>
+  <div *ngIf="isTyping"  class="active-room__is-typing">
+    {{username}} is typing...
+  </div>
+</div>
