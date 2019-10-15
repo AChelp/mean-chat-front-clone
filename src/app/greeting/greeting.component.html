@@ -1,7 +1,12 @@
 <h1 class="greeting__header">Hello, welcome to our chat!</h1>
 <div class="greeting__text">Please, {{isLogin ? 'login' : 'enter your account data'}}.</div>
 
-<form (ngSubmit)="sendFormData()" class="greeting__form" [formGroup]="userDataForm">
+<form
+  (ngSubmit)="sendFormData()"
+  enctype="multipart/form-data"
+  class="greeting__form"
+  [formGroup]="userDataForm"
+>
 
   <label class="greeting__form-field" for="name" *ngIf="!isLogin">
     Enter your name <br>
@@ -11,7 +16,6 @@
       id="name"
       formControlName="name"
       class="greeting__input"
-      placeholder="name"
     >
   </label>
   <div  ngxErrors="name" *ngIf="!isLogin">
@@ -32,7 +36,6 @@
       id="email"
       formControlName="email"
       class="greeting__input"
-      placeholder="email"
     >
   </label>
   <div  ngxErrors="email">
@@ -45,6 +48,17 @@
   </div>
   <br>
 
+  <label class="greeting__avatar" *ngIf="!isLogin" for="avatar">
+    {{isFileChoosen ? 'Avatar choosen' : 'Click to choose your avatar'}}
+    <input
+      id="avatar"
+      type="file"
+      (change)="onFileChange($event)"
+      accept="image/*"
+      class="greeting__input--file"
+    />
+  </label>
+
   <label class="greeting__form-field" for="password">
     Enter your password <br>
   <input
@@ -53,7 +67,6 @@
     id="password"
     formControlName="password"
     class="greeting__input greeting__input--last"
-    placeholder="password"
   >
   </label>
   <div  ngxErrors="password">
@@ -61,18 +74,30 @@
       Please, enter the password.
     </div>
     <div class="greeting__error" ngxError="pattern" when="touched" *ngIf="!isLogin">
-      Really? Such a simple password? Use at least 1 number, 1 lowercase letter and 1 uppercase letter.
+      Really? Such a simple password? Use at least 1 number, 1 lowercase letter
+      and 1 uppercase letter.
       And of course at least 8 characters in length.
     </div>
   </div>
   <br>
 
-  <button type="submit" class="greeting__button">{{isLogin ? 'Login' : 'Sign up'}}</button>
+  <button
+    type="submit"
+    [disabled]="userDataForm.invalid"
+    class="greeting__button"
+  >
+    {{isLogin ? 'Login' : 'Sign up'}}
+  </button>
 </form>
 
 <div class="greeting__registration-proposition" *ngIf="isLogin">
-  Still have no account? You can <span (click)="this.toggleRegistration()" class="greeting__registration-toggle">sign up!</span>
+  Still have no account?
+  You can
+  <span (click)="this.toggleRegistration()" class="greeting__registration-toggle">
+    sign up!
+  </span>
 </div>
+<p *ngIf="!isLogin"> It`s free and always will be.</p>
 <div class="greeting__registration-proposition" *ngIf="!isLogin">
   Already have account? <span (click)="this.toggleRegistration()" class="greeting__registration-toggle">Login!</span>
 </div>

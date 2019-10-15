@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -7,6 +7,8 @@ import {
 import { AuthenticationService } from '../authentication.service';
 import { first } from 'rxjs/operators';
 import { Router } from '@angular/router';
+
+const URL = 'locallhost:3000/signup';
 
 @Component({
   selector: 'app-greeting',
@@ -19,17 +21,18 @@ export class GreetingComponent implements OnInit {
   passwordPattern = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8,})$/;
   // tslint:disable-next-line:max-line-length
   emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
+  isFileChoosen = false;
   isLogin = true;
 
   constructor(private fb: FormBuilder,
               private authentication: AuthenticationService,
               private router: Router,
+              private cd: ChangeDetectorRef,
   ) {
   }
 
   ngOnInit() {
-    if (localStorage.getItem('token')) {
+    if (sessionStorage.getItem('token')) {
       this.router.navigate(['/chat']);
       console.log('redirecting to chat');
     }
@@ -50,6 +53,7 @@ export class GreetingComponent implements OnInit {
         Validators.required,
         Validators.pattern(this.passwordPattern),
       ]],
+      image: [null]
     });
   }
 
@@ -66,7 +70,7 @@ export class GreetingComponent implements OnInit {
         .forEach(controlName => controls[controlName].markAsTouched());
       return;
     }
-
+    console.log(JSON.stringify(value))
     value.email = value.email.toLowerCase();
 
     if (this.isLogin) {
@@ -87,6 +91,26 @@ export class GreetingComponent implements OnInit {
           }
         });
     }
-
   }
+
+  onFileChange(event) {
+    this.isFileChoosen = true;
+    const reader = new FileReader();
+
+    if (event.target.files && event.target.files.length) {
+      const [file] = event.target.files;
+      reader.readAsDataURL(file);
+
+      reader.onload = () => {
+        this.userDataForm.patchValue({
+          image: reader.result
+        });
+
+        // need to run CD since file load runs outside of zone
+        this.cd.markForCheck();
+      };
+    }
+  }
+
 }
+

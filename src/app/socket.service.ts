@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
+import { serverUrl } from '../constants';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +11,7 @@ import { Router } from '@angular/router';
 export class SocketService {
   private socket;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private http: HttpClient) {
   }
 
   joinRoom(data) {
@@ -25,30 +27,42 @@ export class SocketService {
     });
   }
 
-  connect(): void {
-    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-    this.socket = io('http://localhost:3000');
+  connect() {
+    const token = sessionStorage.getItem('token');
+    this.socket = io(serverUrl);
     this.socket.on('connect', () => {
       this.socket
         .emit('authenticate', { token });
     });
 
     this.socket.on('unauthorized', (error, callback) => {
-      console.log('unathorized');
       this.router.navigate(['']);
     });
-
-
   }
 
   sendMessage(data) {
     this.socket.emit('message', data);
   }
 
-  receivedMessage() {
+  showUserOnline(username) {
+    this.socket.emit('say hello', username);
+  }
+
+  recieveNewMessages() {
     return new Observable<any>(observer => {
       this.socket.on('new message', data => {
         observer.next(data);
+      });
+      return () => {
+        this.socket.disconnect();
+      };
+    });
+  }
+
+  updateOnlineUsers() {
+    return new Observable<any>(observer => {
+      this.socket.on('online users updated', users => {
+        observer.next(users);
       });
       return () => {
         this.socket.disconnect();
@@ -61,8 +75,24 @@ export class SocketService {
   }
 
   receivedTyping() {
-    return new Observable<{ isTyping: boolean }>(observer => {
+    return new Observable<any>(observer => {
       this.socket.on('typing', (data) => {
+        observer.next(data);
+      });
+      return () => {
+        this.socket.disconnect();
+      };
+    });
+  }
+
+  sendReadNotification(data) {
+    this.socket.emit('seen', data);
+  }
+
+  receivedReadNotification() {
+    return new Observable<any>(observer => {
+      this.socket.on('seen', (data) => {
+        console.log('seen emited')
         observer.next(data);
       });
       return () => {

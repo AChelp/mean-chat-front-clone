@@ -1,6 +1,4 @@
 import {
-  AfterContentChecked,
-  AfterContentInit,
   AfterViewChecked, AfterViewInit,
   Component,
   ElementRef,
@@ -11,22 +9,30 @@ import {
 } from '@angular/core';
 import { ChatService } from '../chat.service';
 import { SocketService } from '../socket.service';
+import { serverUrl } from '../../constants';
+import * as moment from 'moment';
 
+// @ts-ignore
 @Component({
   selector: 'app-active-dialog',
   templateUrl: './active-dialog.component.html',
-  styleUrls: ['./active-dialog.component.scss']
+  styleUrls: ['./active-dialog.component.scss'],
 })
-export class ActiveDialogComponent implements OnInit, OnChanges, AfterViewChecked {
+export class ActiveDialogComponent implements OnInit, OnChanges, AfterViewChecked, AfterViewInit {
 
   @ViewChild('messagesContainer', { static: false }) private messagesContainer: ElementRef;
-  @Input() usernameToChat: string;
+  @Input() userToChat: { name: string, email: string, password: string, avatar: string, description?: string };
   @Input() username: string;
   @Input() roomName: string;
-  private isTyping = false;
-  messages: { user: string, message: string, sendAt: string }[];
-  lasMessagesLength = 0;
-
+  serverUrl = serverUrl;
+  userIsTyping: string;
+  lastMessagesLength = 0;
+  lastReceivedMessage: string;
+  prevRoom: string;
+  messages: { user: string, message: string, sendAt: string }[] = [];
+  seen = { message: '', time: '' };
+  skipAmount = 0;
+  initLoading = true;
 
   constructor(
     private socketService: SocketService,
@@ -34,52 +40,100 @@ export class ActiveDialogComponent implements OnInit, OnChanges, AfterViewChecke
   ) {
     this.socketService.connect();
 
-    this.socketService.receivedMessage().subscribe(data => {
+    this.socketService.recieveNewMessages().subscribe(data => {
       this.messages.push(data);
-      this.isTyping = false;
-
+      this.userIsTyping = '';
+      this.lastReceivedMessage = data.message;
     });
 
-    this.socketService.receivedTyping().subscribe(bool => {
-      this.isTyping = bool.isTyping;
+    this.socketService.receivedTyping().subscribe(data => {
+      this.userIsTyping = data.user;
       setTimeout(() => {
-        this.isTyping = false;
-      }, 2000);
+        this.userIsTyping = '';
+      }, 3000);
+    });
+
+    this.socketService.receivedReadNotification().subscribe(data => {
+      this.seen = data;
     });
   }
 
   ngOnInit(): void {
+    this.socketService.showUserOnline(this.username);
   }
 
   ngOnChanges() {
     this.messages = [];
+    this.lastMessagesLength = 0;
+    this.skipAmount = 0;
     this.socketService
-      .joinRoom({ user: this.username, room: this.roomName })
+      .joinRoom({
+        user: this.username,
+        room: this.roomName,
+        prevRoom: this.prevRoom
+      })
       .subscribe(data => {
         if (data.isReady) {
-          this.chatService.getRoomHistory(this.roomName).subscribe((messages: { user: string, message: string, sendAt: string }[]) => {
-            this.messages = messages;
-          });
+          this.prevRoom = this.roomName;
+
+          if (this.skipAmount === 0) {
+            this.loadMoreTen();
+          }
         }
       });
   }
 
+  loadMoreTen() {
+    this.chatService.getRoomHistory(this.roomName, this.skipAmount)
+      .subscribe((messages: { user: string, message: string, sendAt: string }[]) => {
+
+        if (this.skipAmount === 0) {
+          console.log('scrolling down');
+          this.scrollbottom();
+        }
+
+        this.messages = [...messages, ...this.messages];
+      });
+
+    this.lastMessagesLength += 10;
+    this.skipAmount += 10;
+  }
+
+  ngAfterViewInit() {
+    console.log('handling scroll');
+    this.messagesContainer.nativeElement.addEventListener('scroll', () => {
+      if (this.messagesContainer.nativeElement.scrollTop === 0) {
+        this.loadMoreTen();
+      }
+    });
+  }
+
   ngAfterViewChecked(): void {
-    if (this.lasMessagesLength < this.messages.length) {
-      console.log('message was add');
-      this.lasMessagesLength = this.messages.length;
+    if (this.skipAmount === 0) {
+      setTimeout(() => {
+        this.scrollbottom();
+      }, 500);
+    }
+
+    if (this.lastMessagesLength < this.messages.length) {
+      this.lastMessagesLength = this.messages.length;
+      this.scrollbottom();
+
+      this.socketService.sendReadNotification({
+        roomName: this.roomName,
+        message: this.lastReceivedMessage,
+        time: moment().format('h:mm A')
+      });
+    }
+
+    if (this.skipAmount === 0 && this.messagesContainer) {
+      console.log('view checked');
       this.scrollbottom();
     }
   }
 
-  typing() {
-    this.socketService.typing({
-      roomName: this.roomName,
-      user: this.username,
-    });
-  }
-
   scrollbottom() {
+    // console.log('scrolling');
     this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
   }
 }

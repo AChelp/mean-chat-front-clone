@@ -12,8 +12,8 @@ export class ChatComponent implements OnInit {
 
   inputs = {
     username: '',
-    usernameToChat: 'general',
-    roomName: 'general',
+    userToChat: null,
+    roomName: 'Generalroom',
   };
 
   attrs: AttributesMap = {
@@ -25,16 +25,19 @@ export class ChatComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.inputs.username = localStorage.getItem('username');
+    this.inputs.username = sessionStorage.getItem('username');
   }
 
   setActiveRoom = (user) => {
-    this.inputs.usernameToChat = user.name;
+    this.inputs.userToChat = user;
 
-    if (this.inputs.usernameToChat !== 'general') {
-      this.inputs.roomName = [this.inputs.username, this.inputs.usernameToChat].sort((a, b) => a.localeCompare(b)).join('');
+    if (this.inputs.userToChat.name !== 'General room') {
+      this.inputs.roomName = [this.inputs.username, this.inputs.userToChat.name]
+        .sort((a, b) => a.localeCompare(b)).join('')
+        .split(' ')
+        .join('');
     } else {
-      this.inputs.roomName = 'general';
+      this.inputs.roomName = 'Generalroom';
     }
   }
 

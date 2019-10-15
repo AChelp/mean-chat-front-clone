@@ -1,11 +1,5 @@
-//:host {
-//  width: 100%;
-//  height: 420px;
-//  background: ;
-//}
-
 .active-room {
-  //height: 100%;
+  position: relative;
 
   &__data {
     height: 26%;
@@ -17,11 +11,29 @@
   &__avatar {
     width: 170px;
     height: 170px;
+    background-size: cover !important;
+  }
+
+  &__avatar--placeholder {
+    width: 170px;
+    height: 170px;
     background: #777;
+    font-size: 170px;
+    line-height: 170px;
+    text-align: center;
   }
 
   &__info {
     padding: 20px;
+    color: #585c5f;
+  }
+
+  &__is-typing {
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    font-size: 0.8em;
+    color: #428bca;
   }
 }
 
@@ -35,11 +47,45 @@
   overflow-y: scroll;
   position: relative;
   word-break: break-all;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+    border-radius: 5px;
+  }
+
+  &::-webkit-scrollbar-button {
+    height: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #becbd9;
+    border-radius: 5px;
+  }
+
+  &::-webkit-scrollbar-track-piece {
+    background-color: #becbd9;
+    border-radius: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #9daab9;
+    border-radius: 5px;
+  }
+
 }
 
 .message {
   width: 70%;
   margin-bottom: 20px;
+  position: relative;
+
+  &__seen {
+    position: absolute;
+    color: #a8a8a8;
+    bottom: -15px;
+    font-size: 0.7em;
+    left: 16px;
+  }
 
   &__details {
     height: 36px;
@@ -51,13 +97,19 @@
     padding: 16px;
   }
 
+  &__send-at {
+    opacity: 0.3;
+  }
+
   &__details--my {
     background: #f0cbb3;
+    color: #703a18;
   }
 
   &__body {
     background: #fff;
     padding: 16px;
+    border-radius: 0 0 8px 8px;
   }
 
   &__body:before {
@@ -66,7 +118,7 @@
     border-width: 10px 10px 10px 0;
     border-color: transparent #fff transparent transparent;
     position: absolute;
-    left: 10px;
+    left: -10px;
   }
 
   &__body--my:before {
@@ -79,7 +131,7 @@
     border-width: 10px 0 10px 10px;
     border-color: transparent transparent transparent #fff;
     position: absolute;
-    right: 10px;
+    right: -10px;
   }
 }
 

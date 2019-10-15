@@ -1,20 +1,56 @@
-<div class="chatrooms">
-  <div class="chatrooms__filter">
-    <button class="chatrooms__filter-button chatrooms__filter-button--active">
+<div class="users">
+  <div class="users__toggle">
+    <button
+      [ngClass]="{
+        'users__toggle-button': true,
+        'users__toggle-button--active': !isShowOnline
+      }"
+      (click)="showAll()"
+    >
       All
     </button>
-    <button class="chatrooms__filter-button">Online</button>
+    <button
+      [ngClass]="{
+        'users__toggle-button': true,
+        'users__toggle-button--active': isShowOnline
+      }"
+      (click)="showOnline()"
+    >
+      Online
+    </button>
   </div>
-  <div class="chatrooms__rooms-list">
-    <div class="room" *ngFor="let user of users" (click)="setActiveRoom(user)">
-      <div class="room__avatar"></div>
+  <div class="users__rooms-list">
+    <div class="room" *ngFor="let user of usersToShow | filterUsers: userSearchQuery"
+         (click)="setActiveRoom(user)">
+      <div class="room__is-online"
+           *ngIf="onlineUsers.includes(user.name)"></div>
+      <div
+        class="room__avatar"
+        *ngIf="user.avatar"
+        [ngStyle]="{
+          'background': 'url(' + serverUrl + '/uploads/' + user.avatar + ')',
+          'background-size': 'cover',
+          'background-position': 'center'
+        }"
+      ></div>
+      <div class="room__avatar--placeholder" *ngIf="!user.avatar" >{{user.name.slice(0, 1)}}</div>
       <div class="room__info">
-        <div class="room__name">{{user.name}}</div>
-        <div class="room__description">
+        <div class="room__name">
+          {{user.name}}
+        </div>
+        <div class="room__description" *ngIf="user.description">
+          {{user.description.length > 40 ? user.description.slice(0, 40) + '...' : user.description }}
+        </div>
+        <div class="room__description" *ngIf="!user.description">
           Want to talk with {{user.name}}?
-<!--          {{user.description.length > 40 ? user.description.slice(0, 40) + '...' : user.description }}-->
         </div>
       </div>
     </div>
   </div>
 </div>
+<input
+  class="users__filter"
+  type="text"
+  [(ngModel)]="userSearchQuery"
+  placeholder="Search..."
+>

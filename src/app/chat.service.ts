@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { serverUrl } from '../constants';
 
 @Injectable({
@@ -13,7 +13,7 @@ export class ChatService {
     return this.http.get(`${serverUrl}/users`);
   }
 
-  public getRoomHistory(room) {
-    return this.http.get('http://localhost:3000/chatroom/' + room);
+  public getRoomHistory(room, skipAmount) {
+    return this.http.get(`${serverUrl}/chatroom/${room}/${skipAmount}`);
   }
 }

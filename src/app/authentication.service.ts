@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, first } from 'rxjs/operators';
 import { serverUrl } from '../constants';
 
@@ -7,15 +7,15 @@ import { serverUrl } from '../constants';
   providedIn: 'root'
 })
 export class AuthenticationService {
-  private isLoggedIn = false;
 
   constructor(private http: HttpClient) {
   }
 
   public signUpUser(user): any {
+
     return this.http.post<any>(
       `${serverUrl}/signup`,
-      user
+      user,
     ).pipe(first(), map(data => {
       return data;
     }));
@@ -27,16 +27,11 @@ export class AuthenticationService {
       user
     ).pipe(first(), map(data => {
       if (data.success) {
-        this.isLoggedIn = true;
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('username', data.username);
+        sessionStorage.setItem('token', data.token);
+        sessionStorage.setItem('username', data.username);
       }
 
       return data;
     }));
-  }
-
-  public chekLogIn() {
-    return this.isLoggedIn;
   }
 }

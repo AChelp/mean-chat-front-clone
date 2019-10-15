@@ -1,21 +1,63 @@
 <div class="active-room">
   <div class="active-room__data">
-    <div class="active-room__avatar"></div>
+    <div
+      class="active-room__avatar"
+      *ngIf="userToChat && userToChat.avatar"
+      [ngStyle]="{
+          'background': 'url(' + serverUrl + '/uploads/' + userToChat.avatar + ')  center center no-repeat'
+        }"
+    ></div>
+    <div
+      class="active-room__avatar--placeholder"
+      *ngIf="userToChat && !userToChat.avatar"
+    >
+      {{userToChat.name.slice(0, 1)}}
+    </div>
+
+    <!--    </img>-->
     <div class="active-room__info">
-      <h1 class="active-room__name">{{usernameToChat}}</h1>
-<!--      <div class="active-room__description">{{room.description}}</div>-->
+      <h1
+        class="active-room__name"
+        *ngIf="userToChat"
+      >
+        {{userToChat.name}}
+      </h1>
+            <div
+              class="active-room__description"
+              *ngIf="userToChat"
+            >
+              {{userToChat.description || 'This is your conversation with ' + userToChat.name}}
+            </div>
     </div>
   </div>
 
-  <!--  //messages-->
-  <div id="chat-window" class="messages" #messagesContainer>
+<!--  infiniteScroll-->
+<!--  [infiniteScrollUpDistance]="0"-->
+<!--  [infiniteScrollThrottle]="500"-->
+<!--  [scrollWindow]="false"-->
+<!--  -->
+<!--  (scrolledUp)="loadMoreTen()"-->
+
+  <div
+    id="chat-window"
+    class="messages"
+    #messagesContainer
+  >
     <div
       [ngClass]="{
       'message': true,
       'message--my': message.user === username
     }"
-      *ngFor="let message of messages"
+      *ngFor="let message of messages, let i = index;"
     >
+      <div
+        *ngIf="message.user === username
+        && seen.message === message.message
+        && i === messages.length - 1"
+        class="message__seen"
+      >
+        Seen {{seen.time}}...
+      </div>
       <div
         [ngClass]="{
       'message__details': true,
@@ -35,7 +77,7 @@
       </div>
     </div>
   </div>
-  <div *ngIf="isTyping"  class="active-room__is-typing">
-    {{username}} is typing...
+  <div *ngIf="userIsTyping" class="active-room__is-typing">
+    {{userIsTyping}} is typing...
   </div>
 </div>
