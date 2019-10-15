@@ -6,9 +6,7 @@ import { ChatComponent } from './chat/chat.component';
 
 const routes: Routes = [
   { path: '', component: GreetingComponent, pathMatch: 'full' },
-  { path: 'chat', component: ChatComponent,
-    // canActivate: [AuthGuard]
-  }
+  { path: 'chat', component: ChatComponent, }
 ];
 
 @NgModule({

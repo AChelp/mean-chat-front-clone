@@ -32,7 +32,6 @@ export class ActiveDialogComponent implements OnInit, OnChanges, AfterViewChecke
   messages: { user: string, message: string, sendAt: string }[] = [];
   seen = { message: '', time: '' };
   skipAmount = 0;
-  initLoading = true;
 
   constructor(
     private socketService: SocketService,
@@ -133,7 +132,6 @@ export class ActiveDialogComponent implements OnInit, OnChanges, AfterViewChecke
   }
 
   scrollbottom() {
-    // console.log('scrolling');
     this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
   }
 }

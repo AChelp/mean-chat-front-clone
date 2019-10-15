@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import * as moment from 'moment';
 import { SocketService } from '../socket.service';
 
@@ -7,7 +7,7 @@ import { SocketService } from '../socket.service';
   templateUrl: './new-message.component.html',
   styleUrls: ['./new-message.component.scss']
 })
-export class NewMessageComponent implements OnInit, OnChanges {
+export class NewMessageComponent implements OnChanges {
   @Input() roomName: string;
   @Input() username: string;
   private message: string;
@@ -16,8 +16,6 @@ export class NewMessageComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     this.message = '';
-  }
-  ngOnInit() {
   }
 
   sendMessage() {

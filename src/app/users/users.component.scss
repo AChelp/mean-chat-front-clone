@@ -51,12 +51,12 @@
     background: #fff;
   }
 
-  &__rooms-list {
+  &__list {
     padding: 10px;
   }
 }
 
-.room {
+.user {
   display: flex;
   margin-bottom: 5px;
   position: relative;
@@ -91,9 +91,6 @@
   }
 
   &__info {
-    //display: flex;
-    //flex-direction: column;
-    //justify-content: space-around;
     padding: 7px;
     width: calc(100% - 75px);
   }

@@ -42,7 +42,7 @@ export class GreetingComponent implements OnInit {
   initForm() {
     this.userDataForm = this.fb.group({
       name: [null, [
-        // Validators.required,
+        Validators.required,
         Validators.pattern(this.namePattern)
       ]],
       email: [null, [
@@ -66,11 +66,11 @@ export class GreetingComponent implements OnInit {
     const { controls, value } = this.userDataForm;
 
     if (!this.isLogin && this.userDataForm.invalid) {
+      console.log('error!')
       Object.keys(controls)
         .forEach(controlName => controls[controlName].markAsTouched());
       return;
     }
-    console.log(JSON.stringify(value))
     value.email = value.email.toLowerCase();
 
     if (this.isLogin) {
@@ -106,7 +106,6 @@ export class GreetingComponent implements OnInit {
           image: reader.result
         });
 
-        // need to run CD since file load runs outside of zone
         this.cd.markForCheck();
       };
     }

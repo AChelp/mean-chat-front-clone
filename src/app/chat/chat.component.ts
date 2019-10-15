@@ -20,10 +20,6 @@ export class ChatComponent implements OnInit {
     class: 'active-dialog-wrapper',
   };
 
-
-  constructor() {
-  }
-
   ngOnInit() {
     this.inputs.username = sessionStorage.getItem('username');
   }

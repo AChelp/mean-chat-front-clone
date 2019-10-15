@@ -11,7 +11,6 @@ import { ChatComponent } from './chat/chat.component';
 import { ActiveDialogComponent } from './active-dialog/active-dialog.component';
 import { UsersComponent } from './users/users.component';
 import { NewMessageComponent } from './new-message/new-message.component';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { FilterUsersPipe } from './filter-users.pipe';
 
 @NgModule({
@@ -31,7 +30,6 @@ import { FilterUsersPipe } from './filter-users.pipe';
     ReactiveFormsModule,
     NgxErrorsModule,
     HttpClientModule,
-    // InfiniteScrollModule,
     DynamicModule.withComponents([ActiveDialogComponent])
   ],
   providers: [],
